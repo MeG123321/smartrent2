@@ -1,14 +1,14 @@
 <?php
 require_once 'includes/config.php';
 require_once 'includes/db.php';
+require_once 'includes/session-init.php';
 require_once 'includes/auth.php';
-session_start();
+require_once 'includes/helpers.php';
+require_once 'includes/db-queries.php';
 require_login();
 
 $user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT r.*, p.title, p.city FROM rentals r LEFT JOIN properties p ON r.property_id = p.id WHERE r.user_id = :uid ORDER BY r.created_at DESC");
-$stmt->execute(['uid'=>$user_id]);
-$rents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$rents = get_user_rentals($pdo, $user_id);
 ?>
 <!doctype html>
 <html lang="pl">

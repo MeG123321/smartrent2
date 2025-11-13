@@ -1,14 +1,11 @@
 <?php
 require_once 'includes/config.php';
 require_once 'includes/db.php';
-
-// start session early so includes/auth.php can use it
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
+require_once 'includes/session-init.php';
 require_once 'includes/auth.php';
 require_once 'includes/admin_functions.php';
+require_once 'includes/helpers.php';
+require_once 'includes/db-queries.php';
 
 // Pobierz id oferty
 $id = intval($_GET['id'] ?? 0);
@@ -17,25 +14,15 @@ if (!$id) {
     exit;
 }
 
-// Pobierz ofertę
-$stmt = $pdo->prepare("SELECT p.*, u.name AS owner_name, u.email AS owner_email, u.id AS owner_id FROM properties p LEFT JOIN users u ON p.owner_id = u.id WHERE p.id = :id LIMIT 1");
-$stmt->execute(['id' => $id]);
-$prop = $stmt->fetch(PDO::FETCH_ASSOC);
+// Pobierz ofertę using centralized query
+$prop = get_property_by_id($pdo, $id);
 if (!$prop) {
     header('Location: property_list.php');
     exit;
 }
 
-// Format ceny bez zewnętrznego helpera (PLN)
-$display_price = '-';
-if (isset($prop['price']) && is_numeric($prop['price'])) {
-    $val = (float)$prop['price'];
-    if (floor($val) == $val) {
-        $display_price = number_format($val, 0, ',', ' ') . ' zł';
-    } else {
-        $display_price = number_format($val, 2, ',', ' ') . ' zł';
-    }
-}
+// Format ceny using centralized helper
+$display_price = format_price($prop['price'] ?? 0);
 
 /*
   ZAMIANA: Usunięto mechanizm rezerwacji datami.
@@ -68,20 +55,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_message'])) {
 
         if (empty($msg_errors)) {
             try {
-                $stmt = $pdo->prepare("INSERT INTO messages (from_user_id, to_user_id, property_id, body, sent_at, read_flag) VALUES (:from, :to, :pid, :body, NOW(), 0)");
-                $stmt->execute([
-                    'from' => $from_user,
-                    'to'   => $to_user,
-                    'pid'  => $id,
-                    'body' => $body
-                ]);
-
-                // Log aktywności (opcjonalne)
-                admin_log_activity($pdo, $from_user, 'Wysłano wiadomość do właściciela', "property_id:{$id}, to_user:{$to_user}");
-
-                $msg_success = "Wiadomość została wysłana do właściciela.";
-                // wyczyść textarea po sukcesie
-                $_POST['message'] = '';
+                if (send_message($pdo, $from_user, $to_user, $id, $body)) {
+                    // Log aktywności (opcjonalne)
+                    admin_log_activity($pdo, $from_user, 'Wysłano wiadomość do właściciela', "property_id:{$id}, to_user:{$to_user}");
+                    
+                    $msg_success = "Wiadomość została wysłana do właściciela.";
+                    // wyczyść textarea po sukcesie
+                    $_POST['message'] = '';
+                } else {
+                    $msg_errors[] = "Wystąpił błąd podczas wysyłania wiadomości. Spróbuj ponownie później.";
+                }
             } catch (Exception $e) {
                 error_log("Błąd przy zapisie wiadomości: " . $e->getMessage());
                 $msg_errors[] = "Wystąpił błąd podczas wysyłania wiadomości. Spróbuj ponownie później.";

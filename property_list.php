@@ -1,61 +1,19 @@
 <?php
 require_once 'includes/config.php';
 require_once 'includes/db.php';
+require_once 'includes/session-init.php';
 require_once 'includes/auth.php';
-
-// session early (navbar/auth may rely on it)
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// Safety helpers local to this file so we don't depend on external helpers
-if (!function_exists('shorten')) {
-    function shorten(string $text, int $max = 60): string {
-        $text = trim($text);
-        if (mb_strlen($text) <= $max) return $text;
-        return rtrim(mb_substr($text, 0, $max - 1)) . '…';
-    }
-}
-
-if (!function_exists('format_price')) {
-    // Simple PLN formatter (no external helper)
-    function format_price($amount): string {
-        if ($amount === null || $amount === '' || !is_numeric($amount)) return '-';
-        $val = (float)$amount;
-        if (floor($val) == $val) {
-            return number_format($val, 0, ',', ' ') . ' zł';
-        }
-        return number_format($val, 2, ',', ' ') . ' zł';
-    }
-}
+require_once 'includes/helpers.php';
+require_once 'includes/db-queries.php';
 
 // Input
 $q = trim((string)($_GET['q'] ?? ''));
 $city = trim((string)($_GET['city'] ?? ''));
 
-// Build SQL with prepared params
-$sql = "SELECT id, title, city, price, image FROM properties WHERE 1=1";
-$params = [];
-
-if ($q !== '') {
-    $sql .= " AND (title LIKE :q OR description LIKE :q)";
-    $params['q'] = '%' . $q . '%';
-}
-if ($city !== '') {
-    // keep exact match as original, but use parameterized value
-    $sql .= " AND city = :city";
-    $params['city'] = $city;
-}
-
-$sql .= " ORDER BY id DESC";
-
+// Use centralized query function
 try {
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $props = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $props = get_properties($pdo, $q, $city);
 } catch (PDOException $e) {
-    // in dev show error; in production log and show friendly message
-    // for now output a readable error so you can debug
     http_response_code(500);
     echo "<h2>Błąd serwera</h2><pre>" . htmlspecialchars($e->getMessage()) . "</pre>";
     exit;
@@ -87,15 +45,8 @@ try {
     <div class="grid">
       <?php foreach ($props as $p): ?>
         <?php
-          // sanitize/prepare image URL
-          if (!empty($p['image'])) {
-              // rawurlencode filename to avoid breaking URL, but keep path readable
-              $imgSrc = 'uploads/properties/' . rawurlencode($p['image']);
-          } else {
-              $imgSrc = 'assets/img/placeholder.png';
-          }
-          // escape for output
-          $imgSrcEsc = htmlspecialchars($imgSrc, ENT_QUOTES);
+          // Use centralized image helper
+          $imgSrcEsc = get_image_url($p['image'] ?? null);
           $title = htmlspecialchars($p['title'] ?? '', ENT_QUOTES);
           $cityOut = htmlspecialchars($p['city'] ?? '', ENT_QUOTES);
           $idOut = urlencode($p['id']);

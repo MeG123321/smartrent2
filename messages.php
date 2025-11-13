@@ -1,14 +1,14 @@
 <?php
 // messages.php
 // Lista konwersacji + chat w jednym widoku.
-// W tym pliku wymuszamy rozmiary miniatur i szerokość lewego panelu inline-ami,
-// aby nadpisać reguły z assets/css/style.css, które mają większy priorytet.
 
 require_once 'includes/config.php';
 require_once 'includes/db.php';
+require_once 'includes/session-init.php';
 require_once 'includes/auth.php';
 require_once 'includes/admin_functions.php';
-session_start();
+require_once 'includes/helpers.php';
+require_once 'includes/db-queries.php';
 require_login();
 
 $user_id = (int)($_SESSION['user_id'] ?? 0);
@@ -28,14 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply'])) {
     if (!$partner_id || !$property_id || $body === '') {
         $errors[] = "Brak parametrów odpowiedzi lub pusty tekst.";
     } else {
-        try {
-            $stmt = $pdo->prepare("INSERT INTO messages (from_user_id,to_user_id,property_id,body,sent_at,read_flag) VALUES (:from,:to,:pid,:body,NOW(),0)");
-            $stmt->execute(['from'=>$user_id,'to'=>$partner_id,'pid'=>$property_id,'body'=>$body]);
-            if (function_exists('admin_log_activity')) admin_log_activity($pdo, $user_id, 'Wysłano wiadomość (w wątku)', "to:{$partner_id}, property:{$property_id}");
+        if (send_message($pdo, $user_id, $partner_id, $property_id, $body)) {
+            if (function_exists('admin_log_activity')) {
+                admin_log_activity($pdo, $user_id, 'Wysłano wiadomość (w wątku)', "to:{$partner_id}, property:{$property_id}");
+            }
             header("Location: messages.php?property_id={$property_id}&partner_id={$partner_id}");
             exit;
-        } catch (Exception $e) {
-            $errors[] = "Błąd bazy przy wysyłaniu odpowiedzi: " . $e->getMessage();
+        } else {
+            $errors[] = "Błąd przy wysyłaniu odpowiedzi.";
         }
     }
 }
@@ -85,41 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['assign'])) {
     }
 }
 
-// Pobierz wiadomości i miniaturekę oferty
+// Pobierz wiadomości i miniaturekę oferty using centralized query
 try {
-    $stmt = $pdo->prepare("SELECT m.*, u_from.name AS from_name, u_to.name AS to_name, p.title AS property_title, p.image AS property_image
-                           FROM messages m
-                           LEFT JOIN users u_from ON m.from_user_id = u_from.id
-                           LEFT JOIN users u_to ON m.to_user_id = u_to.id
-                           LEFT JOIN properties p ON m.property_id = p.id
-                           WHERE m.from_user_id = :uid OR m.to_user_id = :uid
-                           ORDER BY m.sent_at DESC
-                           LIMIT 200");
-    $stmt->execute(['uid'=>$user_id]);
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    $convs = [];
-    foreach ($rows as $r) {
-        $propertyId = intval($r['property_id'] ?? 0);
-        $partnerId = ($r['from_user_id'] == $user_id) ? (int)$r['to_user_id'] : (int)$r['from_user_id'];
-        if ($partnerId === 0 && $r['from_user_id'] == $user_id) $partnerId = (int)$r['to_user_id'];
-        if ($partnerId === 0 && $r['to_user_id'] == $user_id) $partnerId = (int)$r['from_user_id'];
-        $key = $propertyId . ':' . $partnerId;
-        if (!isset($convs[$key])) {
-            $img = $r['property_image'] ?? null;
-            $imgUrl = $img ? ('uploads/properties/' . rawurlencode($img)) : null;
-            $convs[$key] = [
-                'property_id' => $propertyId,
-                'partner_id' => $partnerId,
-                'partner_name' => ($r['from_user_id'] == $user_id) ? ($r['to_name'] ?? 'Użytkownik') : ($r['from_name'] ?? 'Użytkownik'),
-                'property_title' => $r['property_title'] ?? 'oferta',
-                'snippet' => mb_substr(strip_tags($r['body']), 0, 160),
-                'sent_at' => $r['sent_at'],
-                'property_image' => $imgUrl,
-            ];
-        }
-    }
-    $conversations = array_values($convs);
+    $conversations = get_user_conversations($pdo, $user_id, 200);
 } catch (Exception $e) {
     $errors[] = "Błąd pobierania wiadomości: " . $e->getMessage();
     $conversations = [];
@@ -142,18 +110,9 @@ if ($activePartner && $activeProperty) {
     $stm->execute(['id' => $activePartner]);
     $partnerRow = $stm->fetch(PDO::FETCH_ASSOC);
 
+    // Use centralized query for message thread
     try {
-        $stmt = $pdo->prepare("
-          SELECT m.*, u_from.name AS from_name, u_to.name AS to_name
-          FROM messages m
-          LEFT JOIN users u_from ON m.from_user_id = u_from.id
-          LEFT JOIN users u_to ON m.to_user_id = u_to.id
-          WHERE m.property_id = :pid
-            AND ((m.from_user_id = :me AND m.to_user_id = :partner) OR (m.from_user_id = :partner AND m.to_user_id = :me))
-          ORDER BY m.sent_at ASC
-        ");
-        $stmt->execute(['pid'=>$activeProperty, 'me'=>$user_id, 'partner'=>$activePartner]);
-        $thread = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $thread = get_message_thread($pdo, $activeProperty, $user_id, $activePartner);
     } catch (Exception $e) {
         $errors[] = "Błąd ładowania wątku: " . $e->getMessage();
         $thread = [];
@@ -164,11 +123,6 @@ if ($activePartner && $activeProperty) {
     } else {
         $canAssign = false;
     }
-}
-
-function fmt_dt($dt) {
-    if (!$dt) return '';
-    return htmlspecialchars(substr($dt,0,16));
 }
 ?>
 <!doctype html>
@@ -215,7 +169,7 @@ function fmt_dt($dt) {
           </div>
           <div class="conv-body">
             <strong class="conv-title"><?=htmlspecialchars($c['partner_name'])?></strong>
-            <div class="conv-meta muted"><?=htmlspecialchars($c['property_title'])?> — <?=fmt_dt($c['sent_at'])?></div>
+            <div class="conv-meta muted"><?=htmlspecialchars($c['property_title'])?> — <?=format_datetime($c['sent_at'])?></div>
             <div class="snippet"><?=htmlspecialchars($c['snippet'])?></div>
           </div>
         </div>
