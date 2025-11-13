@@ -1,0 +1,31 @@
+ID Testu,Nazwa,Opis,Warunek Początkowy,Scenariusz,Dane Wejściowe,Oczekiwany Efekt
+1,Login Test,Test logowania użytkownika,Brak,Przechodzę do strony logowania,Użyj poprawnych danych logowania,Użytkownik jest zalogowany
+2,Logout Test,Test wylogowywania użytkownika,Użytkownik zalogowany,Przechodzę do zakładki wylogowania,Użytkownik zostaje wylogowany
+3,Password Reset Test,Test resetowania hasła,Użytkownik zarejestrowany,Przechodzę do zakładki resetowania hasła,Użyj zarejestrowanego e-maila,Wysyłane jest link do resetowania
+4,Registration Test,Test rejestracji nowego użytkownika,Brak,Wypełniam formularz rejestracyjny,Użyj poprawnych danych,Wszystkie dane poprawne
+5,Add Property Test,Test dodawania nowej nieruchomości,Użytkownik zalogowany,Dodaj nową nieruchomość,Wypełniam formularz dodawania nieruchomości,Nieruchomość dodana pomyślnie
+6,Edit Property Test,Test edytowania nieruchomości,Użytkownik zalogowany,Edytuję istniejącą nieruchomość,Zmiana danych nieruchomości,Nieruchomość edytowana pomyślnie
+7,Delete Property Test,Test usuwania nieruchomości,Użytkownik zalogowany,Usuwam nieruchomość,Wybieram nieruchomość do usunięcia,Nieruchomość usunięta pomyślnie
+8,Search Property Test,Test wyszukiwania nieruchomości,Brak,Przechodzę do sekcji wyszukiwania,Podaj dane wyszukiwania,Znalezione nieruchomości odpowiadają wyszukiwaniu
+9,Filter Properties Test,Test filtrowania nieruchomości,Brak,Przechodzę do sekcji filtrowania,Wybieram filtry,Znalezione nieruchomości odpowiadają filtrowaniu
+10,Messaging System Test,Test systemu wiadomości,Użytkownik zalogowany,Wysyłam wiadomość do innego użytkownika,Prawidłowa treść wiadomości,Wiadomość wysłana
+11,Admin Panel Access Test,Test dostępu do panelu administratora,Użytkownik admin,Przechodzę do panelu admina,Udogodniony dostęp do panelu
+12,Payment Test,Test procesu płatności,Użytkownik zalogowany,Przechodzę do sekcji płatności,Podaj poprawne dane płatności,Płatność dokonana
+13,Maintenance Report Test,Test raportu konserwacji,Użytkownik zalogowany,Przechodzę do sekcji raportów,Same information about maintenance,Raport zapisany
+14,Support Ticket Test,Test zgłaszania problemu,Użytkownik zalogowany,Zgłaszam nowy problem,Opisz problem,Ticket utworzony
+15,Security Test 1,Test zabezpieczeń aplikacji,Brak,wizytacja strony,Sprawdzenie wrażliwości,Bezpieczeństwo w normie
+16,Performance Test 1,Test wydajności aplikacji,Brak,test obciążeniowy,Rozpocznij test,Obciążenie w granicach normy
+17,Login Invalid Test,Test logowania z błędnymi danymi,Brak,Przechodzę do strony logowania,Użyj błędnych danych logowania,Nie udaje się zalogować
+18,Password Complexity Test,Test złożoności hasła,Brak,Przechodzę do formularza rejestracji,Użyj prostego hasła,Odrzucenie formularza
+19,Email Verification Test,Test weryfikacji e-maila,Użytkownik rejestrujący się,Przechodzę do weryfikacji e-maila,Użyj niezweryfikowanego e-maila,Odrzucenie dostępu
+20,Logout Expiration Test,Test wygaśnięcia sesji,Użytkownik zalogowany,Wygasza sesję po 30 minutach,Nie można wykonać akcji,Rozłączenie sesji
+21,Admin Panel Edit Property Test,Test edytowania przez admina,Użytkownik admin,Edytuję nieruchomość,Zmiana danych,Nieruchomość edytowana
+22,Admin Panel Delete User Test,Test usuwania użytkownika,Użytkownik admin,Usuwam użytkownika,Prawidłowy ID użytkownika,Użytkownik usunięty
+23,Payment Failure Test,Test nieudanej płatności,Użytkownik zalogowany,Przechodzę do płatności,Błędne dane płatności,Płatność nieudana
+24,Maintenance Report View Test,Test wyświetlania raportu,Użytkownik zalogowany,Odwiedź raporty,Przeglądaj wszystkie raporty,Wszystkie raporty widoczne
+25,Support Ticket Resolution Test,Test rozwiązywania zgłoszeń,Użytkownik admin,Odwiedź sekcję zgłoszeń,Zamknij ticket,Tikiet zamknięty
+26,Security Test 2,Test prób ataku,Brak,Przeprowadzam test,Atak XSS,Bezpieczeństwo w normie
+27,Performance Test 2,Test czasu odpowiedzi,Użytkownik,Sprawdzam wydajność,Sprawdzanie szybkości,Czas odpowiedzi w normie
+28,Admin Access Control Test,Test dostępu do admin panelu,Użytkownik nieadmin,Przechodzę do panelu,Gdy użytkownik nieadmin próbuje uzyskać dostęp,Odmowa dostępu
+29,Search Performance Test,Test wydajności wyszukiwania,Użytkownik,Przechodzę do wyszukiwania,Sprawdzanie efektów wyszukiwania,Szybkie wyniki
+30,Security Logging Test,Test logów bezpieczeństwa,Użytkownik admin,Użytkownik próbuje wejść na zapasowy panel,Monitorowanie logów,Odczyt logów
