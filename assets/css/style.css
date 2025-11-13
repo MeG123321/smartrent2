@@ -116,3 +116,7 @@ input[type="text"],input[type="email"],input[type="password"],textarea,input[typ
 
 /* Spacing for stacked panels */
 aside .panel + .panel{margin-top:12px}
+
+/* Section heading spacing */
+section h3 + .panel{margin-top:18px}
+section h3:not(:first-child){margin-top:18px}
