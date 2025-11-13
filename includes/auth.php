@@ -16,6 +16,10 @@ function require_role(string $role) {
         exit;
     }
 }
+// helper check if current user is admin
+function is_admin(): bool {
+    return !empty($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+}
 // helper do pobrania emaila użytkownika
 function get_user_email($pdo, $user_id) {
     $stmt = $pdo->prepare("SELECT email FROM users WHERE id = :id LIMIT 1");

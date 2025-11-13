@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply'])) {
         try {
             $stmt = $pdo->prepare("INSERT INTO messages (from_user_id,to_user_id,property_id,body,sent_at,read_flag) VALUES (:from,:to,:pid,:body,NOW(),0)");
             $stmt->execute(['from'=>$user_id,'to'=>$partner_id,'pid'=>$property_id,'body'=>$body]);
-            if (function_exists('admin_log_activity')) admin_log_activity($pdo, $user_id, 'Wysłano wiadomość (w wątku)', "to:{$partner_id}, property:{$property_id}");
+            admin_log_activity($pdo, $user_id, 'Wysłano wiadomość (w wątku)', "to:{$partner_id}, property:{$property_id}");
             header("Location: messages.php?property_id={$property_id}&partner_id={$partner_id}");
             exit;
         } catch (Exception $e) {
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['assign'])) {
         $prop = $stm->fetch(PDO::FETCH_ASSOC);
         if (!$prop) {
             $errors[] = "Nie znaleziono nieruchomości.";
-        } elseif ((int)$prop['owner_id'] !== $user_id && !(function_exists('is_admin') && is_admin())) {
+        } elseif ((int)$prop['owner_id'] !== $user_id && !is_admin()) {
             $errors[] = "Brak uprawnień do przypisania tej nieruchomości.";
         } else {
             try {
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['assign'])) {
                     $pay = $pdo->prepare("INSERT INTO payments (assignment_id, due_date, amount, status, created_at) VALUES (:aid, DATE_ADD(CURDATE(), INTERVAL 30 DAY), :amt, 'due', NOW())");
                     $pay->execute(['aid'=>$assignmentId,'amt'=>$amount]);
 
-                    if (function_exists('admin_log_activity')) admin_log_activity($pdo, $user_id, 'Przypisano mieszkanie (ajax/submit)', "assignment_id:{$assignmentId}, property_id:{$property_id}, tenant_id:{$tenant_id}");
+                    admin_log_activity($pdo, $user_id, 'Przypisano mieszkanie (ajax/submit)', "assignment_id:{$assignmentId}, property_id:{$property_id}, tenant_id:{$tenant_id}");
                     $pdo->commit();
 
                     header("Location: management_assignment.php?id=" . urlencode($assignmentId));
@@ -102,8 +102,6 @@ try {
     foreach ($rows as $r) {
         $propertyId = intval($r['property_id'] ?? 0);
         $partnerId = ($r['from_user_id'] == $user_id) ? (int)$r['to_user_id'] : (int)$r['from_user_id'];
-        if ($partnerId === 0 && $r['from_user_id'] == $user_id) $partnerId = (int)$r['to_user_id'];
-        if ($partnerId === 0 && $r['to_user_id'] == $user_id) $partnerId = (int)$r['from_user_id'];
         $key = $propertyId . ':' . $partnerId;
         if (!isset($convs[$key])) {
             $img = $r['property_image'] ?? null;
@@ -159,7 +157,7 @@ if ($activePartner && $activeProperty) {
         $thread = [];
     }
 
-    if ($activePropertyRow && ((int)$activePropertyRow['owner_id'] === $user_id || (function_exists('is_admin') && is_admin()))) {
+    if ($activePropertyRow && ((int)$activePropertyRow['owner_id'] === $user_id || is_admin())) {
         $canAssign = true;
     } else {
         $canAssign = false;
@@ -192,8 +190,7 @@ function fmt_dt($dt) {
 
   <div class="messages-wrap">
     <!-- wymuszona szerokość lewego panelu inline aby nadpisać globalne reguły -->
-    <aside class="conversations" aria-label="Lista konwersacji"
-           style="width:240px;max-width:240px;flex:0 0 240px;">
+    <aside class="conversations" aria-label="Lista konwersacji">
       <h3>Ostatnie konwersacje</h3>
       <?php if (empty($conversations)): ?>
         <p class="muted">Brak wiadomości.</p>
@@ -205,12 +202,11 @@ function fmt_dt($dt) {
       ?>
         <div class="conv-item <?= $isActive ? 'conv-active' : '' ?>"
              onclick="location.href='messages.php?property_id=<?=urlencode($pid)?>&partner_id=<?=urlencode($partner)?>'">
-          <div class="conv-thumb" style="width:76px;height:120px;flex:0 0 56px;">
+          <div class="conv-thumb">
             <?php if ($thumb): ?>
-              <img src="<?=htmlspecialchars($thumb, ENT_QUOTES)?>" alt="miniatura"
-                   style="width:156px;height:110px;object-fit:cover;display:block;">
+              <img src="<?=htmlspecialchars($thumb, ENT_QUOTES)?>" alt="miniatura">
             <?php else: ?>
-              <div class="thumb-placeholder" style="width:56px;height:40px;"></div>
+              <div class="thumb-placeholder"></div>
             <?php endif; ?>
           </div>
           <div class="conv-body">
@@ -223,8 +219,7 @@ function fmt_dt($dt) {
     </aside>
 
     <!-- wymuszone inline style dla sekcji thread aby chat był po prawej i miał odpowiednią szerokość -->
-    <section class="thread" aria-live="polite"
-             style="min-width:360px;max-width:calc(100% - 260px);order:2;margin-left:auto;">
+    <section class="thread" aria-live="polite">
       <?php if (!$activePartner || !$activeProperty): ?>
         <p class="muted">Wybierz konwersację z listy po lewej, aby otworzyć chat.</p>
       <?php else: ?>
@@ -232,7 +227,7 @@ function fmt_dt($dt) {
           <h3>Chat — <?=htmlspecialchars($partnerRow['name'] ?? 'Użytkownik')?> — <?=htmlspecialchars($activePropertyRow['title'] ?? 'oferta')?></h3>
 
           <?php if ($canAssign && $activePartner && $activeProperty): ?>
-            <form method="post" onsubmit="return confirm('Przypisać to mieszkanie temu użytkownikowi?');" class="assign-form" style="margin-bottom:12px;">
+            <form method="post" onsubmit="return confirm('Przypisać to mieszkanie temu użytkownikowi?');" class="assign-form">
               <input type="hidden" name="assign" value="1">
               <input type="hidden" name="property_id" value="<?=htmlspecialchars($activeProperty)?>">
               <input type="hidden" name="tenant_id" value="<?=htmlspecialchars($activePartner)?>">
@@ -249,7 +244,6 @@ function fmt_dt($dt) {
               <div class="message <?= $isMe ? 'me' : 'other' ?>">
                 <div class="meta"><strong><?=htmlspecialchars($m['from_name'] ?? ($isMe ? 'Ty' : 'Użytkownik'))?></strong> <span class="muted"><?=htmlspecialchars($m['sent_at'])?></span></div>
                 <div class="body"><?=nl2br(htmlspecialchars($m['body']))?></div>
-                <div style="clear:both"></div>
               </div>
             <?php endforeach; endif; ?>
           </div>
@@ -259,10 +253,10 @@ function fmt_dt($dt) {
               <input type="hidden" name="reply" value="1">
               <input type="hidden" name="property_id" value="<?=htmlspecialchars($activeProperty)?>">
               <input type="hidden" name="partner_id" value="<?=htmlspecialchars($activePartner)?>">
-              <label style="display:block">Odpowiedź
-                <textarea name="body" rows="4" required style="width:100%"></textarea>
+              <label>Odpowiedź
+                <textarea name="body" rows="4" required></textarea>
               </label>
-              <div style="margin-top:8px;">
+              <div class="form-actions">
                 <button class="btn" type="submit">Wyślij</button>
                 <a class="btn-ghost" href="messages.php">Zamknij chat</a>
               </div>

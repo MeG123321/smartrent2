@@ -103,3 +103,16 @@ input[type="text"],input[type="email"],input[type="password"],textarea,input[typ
   .property-header{flex-direction:column}
   .grid-3{grid-template-columns:1fr}
 }
+
+/* Admin panel stats grid */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
+.stats .panel p.stat-number{font-size:1.6rem;font-weight:700}
+
+/* Admin panel main grid layout */
+.admin-main-grid{grid-template-columns:1fr 360px;gap:18px}
+
+/* Activity item styles */
+.activity-item{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03)}
+
+/* Spacing for stacked panels */
+aside .panel + .panel{margin-top:12px}

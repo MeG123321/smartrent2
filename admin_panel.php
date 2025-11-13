@@ -22,39 +22,39 @@ $recent = admin_get_recent($pdo);
 <main class="container">
   <h2>Panel administratora</h2>
 
-  <div class="grid-3 stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px">
+  <div class="grid-3 stats">
     <div class="panel">
       <h3>Użytkownicy</h3>
-      <p style="font-size:1.6rem;font-weight:700"><?=intval($stats['users'])?></p>
+      <p class="stat-number"><?=intval($stats['users'])?></p>
       <p class="muted">Zarejestrowani</p>
       <p><a class="btn" href="manage_users.php">Zarządzaj</a></p>
     </div>
     <div class="panel">
       <h3>Oferty</h3>
-      <p style="font-size:1.6rem;font-weight:700"><?=intval($stats['properties'])?></p>
+      <p class="stat-number"><?=intval($stats['properties'])?></p>
       <p class="muted">Aktywne oferty</p>
       <p><a class="btn" href="property_list.php">Przeglądaj</a></p>
     </div>
     <div class="panel">
       <h3>Wynajmy</h3>
-      <p style="font-size:1.6rem;font-weight:700"><?=intval($stats['rentals'])?></p>
+      <p class="stat-number"><?=intval($stats['rentals'])?></p>
       <p class="muted">Rezerwacje</p>
       <p><a class="btn" href="rent_history.php">Historia</a></p>
     </div>
     <div class="panel">
       <h3>Przychód</h3>
-      <p style="font-size:1.6rem;font-weight:700"><?=number_format($stats['revenue'],2,',',' ')?> zł</p>
+      <p class="stat-number"><?=number_format($stats['revenue'],2,',',' ')?> zł</p>
       <p class="muted">Łączny przychód</p>
       <p><a class="btn" href="admin_reports.php">Raporty</a></p>
     </div>
   </div>
 
-  <div class="grid" style="grid-template-columns:1fr 360px;gap:18px">
+  <div class="grid admin-main-grid">
     <section>
       <h3>Ostatnie aktywności</h3>
       <div class="panel">
         <?php foreach ($recent['rentals'] as $r): ?>
-          <div style="padding:8px;border-bottom:1px solid rgba(255,255,255,0.03)">
+          <div class="activity-item">
             <strong>#<?=htmlspecialchars($r['id'])?></strong>
             <?=htmlspecialchars($r['title'] ?? '—')?> —
             <?=htmlspecialchars($r['start_date'])?> → <?=htmlspecialchars($r['end_date'])?>
@@ -85,13 +85,13 @@ $recent = admin_get_recent($pdo);
         <p><a class="btn" href="admin_help.php">Szczegóły pomocy</a></p>
       </div>
 
-      <div class="panel" style="margin-top:12px">
+      <div class="panel">
         <h4>Zgłoszenia support</h4>
         <?php
         $stmt = $pdo->query("SELECT id, user_id, subject, status, created_at FROM support_tickets ORDER BY created_at DESC LIMIT 5");
         $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($tickets as $t): ?>
-          <div style="padding:6px;border-bottom:1px solid rgba(255,255,255,0.03)">
+          <div class="activity-item">
             <strong>#<?=htmlspecialchars($t['id'])?></strong> <?=htmlspecialchars($t['subject'])?><br>
             <span class="muted"><?=htmlspecialchars($t['status'])?> • <?=htmlspecialchars($t['created_at'])?></span>
           </div>
