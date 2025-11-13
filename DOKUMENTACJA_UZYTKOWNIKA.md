@@ -1,40 +1,68 @@
-# DOKUMENTACJA UŻYTKOWNIKA 
+# Comprehensive User Documentation
 
-## Wprowadzenie
-Aplikacja Smartrent to nowoczesne narzędzie do zarządzania wynajmem. Dzięki intuicyjnemu interfejsowi użytkownika oraz potężnym funkcjom, użytkownicy mogą w prosty sposób zarządzać wynajmowanymi nieruchomościami.
+## System Processes
+This document provides a detailed overview of all system processes, screens, and user actions within the Smartrent2 application.
 
-## Instalacja
-### Wymagania systemowe
-- System operacyjny: Windows 10 lub nowszy, macOS Mojave lub nowszy, Linux (dystrybucje wspierane)
-- Minimalne wymagania pamięci RAM: 4 GB
-- Wymagana przestrzeń na dysku: 100 MB
+### 1. Registration
+#### Step-by-Step Instructions:
+1. Navigate to the registration page.
+2. Fill in the required fields: Name, Email, Password, Confirm Password.
+3. Agree to the terms and conditions.
+4. Click on the "Register" button.
 
-### Instrukcje instalacji
-1. Pobierz aplikację z oficjalnej strony Smartrent.
-2. Otwórz instalator i postępuj zgodnie z instrukcjami na ekranie.
-3. Po zakończeniu instalacji uruchom aplikację.
+#### Screen Description:
+- **Email Field:** Must be a valid email address.
+- **Password:** Should contain at least 8 characters, including a number and a special character.
 
-## Przewodnik użytkownika
-### Jak się zarejestrować i zalogować
-1. Uruchom aplikację Smartrent.
-2. Kliknij przycisk „Zarejestruj się”, aby utworzyć nowe konto.
-3. Wprowadź wymagane informacje i zatwierdź.
-4. Aby zalogować się, wprowadź swój adres e-mail i hasło.
+### 2. Login
+#### Step-by-Step Instructions:
+1. Go to the login page.
+2. Enter your email and password.
+3. Click on the "Login" button.
 
-### Opis interfejsu użytkownika
-- **Ekran główny**: Miejsce, w którym znajdują się wszystkie dostępne funkcje.
-- **Panel boczny**: Szybki dostęp do najpopularniejszych funkcji, takich jak zarządzanie nieruchomościami i danymi użytkownika.
+#### Screen Description:
+- **Remember Me Checkbox:** Option to stay logged in.
 
-### Obsługa kluczowych funkcji
-- **Zarządzanie nieruchomościami**: Dodaj, edytuj lub usuń wynajmowane nieruchomości.
-- **Zarządzanie najemcami**: Track info about tenants and their contracts.
+### 3. User Panel
+#### Overview:
+The user panel serves as the dashboard for individual users to manage their accounts and properties.
+#### Features:
+- Update Profile
+- View Rental Listings
+- Access Messaging
 
-## Rozwiązywanie problemów
-1. **Nie mogę się zalogować**: Sprawdź poprawność wpisywanego hasła или zresetuj je, klikając „Zapomniałeś hasła?”.
-2. **Aplikacja się nie uruchamia**: Upewnij się, że spełniasz wymagania systemowe.
+### 4. Property Browsing
+#### Step-by-Step Instructions:
+1. Navigate to the properties section.
+2. Use filters to narrow down search results (e.g., price range, location).
+3. Click on a property to view details.
 
-## Wsparcie techniczne
-Aby uzyskać pomoc techniczną, skontaktuj się z naszym zespołem wsparcia przez formularz kontaktowy w aplikacji lub pisząc na e-mail: wsparcie@smartrent.pl
+### 5. Messaging
+#### Overview:
+Users can communicate with landlords and support.
+#### Instructions:
+- Click on the message icon in the user panel.
+- Type and send messages as needed.
 
-## Aktualizacje i nowości
-Regularnie sprawdzaj sekcję „Aktualizacje” w aplikacji, aby być na bieżąco z nowymi funkcjami i poprawkami.
+### 6. Rental History
+#### Accessing Your History:
+1. Go to the user panel.
+2. Click on "Rental History".
+3. Review your past rentals and related documents.
+
+### 7. Support Tickets
+#### Creating a Support Ticket:
+1. In the user panel, select "Support Tickets".
+2. Click on "Create New Ticket".
+3. Fill in the issue description and submit.
+
+### 8. Admin Panel
+#### Overview:
+The admin panel allows administrators to manage users and properties.
+#### Key Functions:
+- View all users
+- Manage rental listings
+- Handle support tickets
+
+## Conclusion
+This documentation provides a comprehensive guide to user interactions within the Smartrent2 platform. For further assistance, please contact support.
