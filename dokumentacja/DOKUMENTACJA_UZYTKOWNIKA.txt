@@ -1,0 +1,131 @@
+# User Documentation for smartrent2 Application
+
+## Table of Contents
+1. Introduction
+2. Login Screen
+3. Registration Screen
+4. Main Screen
+5. User Panel
+6. Property Management
+7. Messaging System
+8. Rental History
+9. Support Tickets
+10. Admin Panel
+11. Keyboard Shortcuts
+12. Contact Information
+
+---
+
+## 1. Introduction
+Welcome to the user documentation for the smartrent2 application, designed to simplify rental property management.
+
+## 2. Login Screen
+### Description
+The login screen allows users to access their accounts.
+
+### User Actions
+- Enter email and password.
+- Click 'Login'.
+
+### Possible Messages
+- "Login successful!"
+- "Invalid credentials. Please try again."
+
+### ASCII Diagram
+```
+[   Login Screen   ]
+--------------------
+| Email: ___________|
+| Password: ________|
+|                    |
+|       [Login]     |
+--------------------
+```
+
+## 3. Registration Screen
+### Description
+Users can create a new account using the registration screen.
+
+### User Actions
+- Fill out the registration form.
+- Click 'Register'.
+
+### Possible Messages
+- "Registration successful!"
+- "Email already in use."
+
+### ASCII Diagram
+```
+[ Registration Screen ]
+---------------------
+| Name: _____________|
+| Email: ____________|
+| Password: _________|
+|                    |
+|     [Register]     |
+---------------------
+```
+
+## 4. Main Screen
+### Description
+The main screen serves as the central hub for user activities.
+
+### User Actions
+- Navigate through different features.
+
+### ASCII Diagram
+```
+[    Main Screen    ]
+----------------------
+| Properties | Users   |
+| Messages    | History |
+| Tickets     | Admin   |
+----------------------
+```
+
+## 5. User Panel
+### Description
+User-specific actions and information.
+
+### User Actions
+- Edit user profile.
+
+## 6. Property Management
+### Description
+Manage rental properties easily.
+
+### User Actions
+- Add or remove properties.
+
+## 7. Messaging System
+### Description
+Communicate with others through the built-in messaging system.
+
+## 8. Rental History
+### Description
+View history of previous rentals.
+
+### User Actions
+- Access rental history from the main menu.
+
+## 9. Support Tickets
+### Description
+Submit inquiries or issues.
+
+### User Actions
+- Fill out and submit the support ticket form.
+
+## 10. Admin Panel
+### Description
+Admin functionalities for application management.
+
+## 11. Keyboard Shortcuts
+| Shortcut          | Action                        |
+|-------------------|------------------------------|
+| Ctrl + N          | Create new item              |
+| Ctrl + D          | Delete selected item         |
+
+## 12. Contact Information
+For support, contact us at support@smartrent2.com.
+
+---
