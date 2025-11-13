@@ -1,8 +1,8 @@
 <?php
 require_once 'includes/config.php';
 require_once 'includes/db.php';
+require_once 'includes/session-init.php';
 require_once 'includes/auth.php';
-session_start();
 require_role('admin');
 
 $id = intval($_GET['id'] ?? 0);
@@ -31,13 +31,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $imageName = $prop['image'];
         if (!empty($_FILES['image']['name'])) {
             $f = $_FILES['image'];
-            $ext = pathinfo($f['name'], PATHINFO_EXTENSION);
-            $allowed = ['jpg','jpeg','png','webp'];
-            if (!in_array(strtolower($ext), $allowed)) {
-                $errors[] = "Nieprawidłowy format obrazu.";
+            
+            // Improved file upload validation
+            if ($f['error'] !== UPLOAD_ERR_OK) {
+                $errors[] = "Błąd przesyłania pliku (kod: {$f['error']}).";
             } else {
-                $imageName = time() . '_' . bin2hex(random_bytes(6)) . '.' . $ext;
-                move_uploaded_file($f['tmp_name'], __DIR__ . "/uploads/properties/$imageName");
+                // Check file size (max 5MB)
+                $maxSize = 5 * 1024 * 1024;
+                if ($f['size'] > $maxSize) {
+                    $errors[] = "Plik jest za duży. Maksymalny rozmiar to 5MB.";
+                }
+                
+                // Verify actual image type
+                $imageInfo = @getimagesize($f['tmp_name']);
+                if ($imageInfo === false) {
+                    $errors[] = "Plik nie jest prawidłowym obrazem.";
+                } else {
+                    // Check allowed MIME types
+                    $allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
+                    if (!in_array($imageInfo['mime'], $allowedMimes)) {
+                        $errors[] = "Nieprawidłowy format obrazu. Dozwolone: JPG, PNG, WEBP.";
+                    }
+                }
+                
+                // Check file extension
+                $ext = strtolower(pathinfo($f['name'], PATHINFO_EXTENSION));
+                $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+                if (!in_array($ext, $allowed)) {
+                    $errors[] = "Nieprawidłowe rozszerzenie pliku.";
+                }
+                
+                if (empty($errors)) {
+                    $imageName = time() . '_' . bin2hex(random_bytes(6)) . '.' . $ext;
+                    $uploadPath = __DIR__ . "/uploads/properties/$imageName";
+                    
+                    if (!move_uploaded_file($f['tmp_name'], $uploadPath)) {
+                        $errors[] = "Nie udało się zapisać pliku.";
+                    }
+                }
             }
         }
 

@@ -1,28 +1,21 @@
 <?php
 require_once 'includes/config.php';
 require_once 'includes/db.php';
+require_once 'includes/session-init.php';
 require_once 'includes/auth.php';
-session_start();
+require_once 'includes/helpers.php';
+require_once 'includes/db-queries.php';
 require_login();
 
 $user_id = $_SESSION['user_id'];
 
-// krótkie statystyki użytkownika
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM rentals WHERE user_id = :uid");
-$stmt->execute(['uid'=>$user_id]);
-$totalRentals = (int)$stmt->fetchColumn();
+// krótkie statystyki użytkownika using centralized query
+$stats = get_user_rental_stats($pdo, $user_id);
+$totalRentals = $stats['total'];
+$upcoming = $stats['upcoming'];
 
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM rentals WHERE user_id = :uid AND start_date >= CURDATE()");
-$stmt->execute(['uid'=>$user_id]);
-$upcoming = (int)$stmt->fetchColumn();
-
-$stmt = $pdo->prepare("SELECT id,property_id,start_date,end_date,price,created_at FROM rentals WHERE user_id = :uid ORDER BY created_at DESC LIMIT 10");
-$stmt->execute(['uid'=>$user_id]);
-$recentRents = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$stmt = $pdo->prepare("SELECT id,subject,status,created_at FROM support_tickets WHERE user_id = :uid ORDER BY created_at DESC LIMIT 5");
-$stmt->execute(['uid'=>$user_id]);
-$tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$recentRents = get_user_rentals($pdo, $user_id, 10);
+$tickets = get_user_tickets($pdo, $user_id, 5);
 ?>
 <!doctype html>
 <html lang="pl">
@@ -57,7 +50,7 @@ $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <tr>
                 <td><?=htmlspecialchars($r['id'])?></td>
                 <td><?=htmlspecialchars($r['start_date'])?> → <?=htmlspecialchars($r['end_date'])?></td>
-                <td><?=number_format((float)$r['price'],2,',',' ')?> zł</td>
+                <td><?=format_price($r['price'])?></td>
                 <td><?=htmlspecialchars($r['created_at'])?></td>
               </tr>
             <?php endforeach; ?>
