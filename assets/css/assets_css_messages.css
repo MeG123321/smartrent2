@@ -73,7 +73,7 @@
 /* Chat (prawy panel) */
 .thread {
   flex: 1 1 auto;
-  min-width: 340px; /* dostosowane by zmieścić się po zmniejszeniu lewego panelu */
+  min-width: 360px; /* dostosowane by zmieścić się po zmniejszeniu lewego panelu */
   max-width: calc(100% - 260px); /* zostaw miejsce po lewej (szer. conversations + gap) */
   order: 2;
   margin-left: auto;
@@ -95,10 +95,15 @@
 
 /* controls */
 .controls { margin-top:12px; }
-.reply-form textarea { background: transparent; border:1px solid rgba(255,255,255,0.04); color:var(--text); border-radius:8px; padding:8px; }
+.reply-form textarea { background: transparent; border:1px solid rgba(255,255,255,0.04); color:var(--text); border-radius:8px; padding:8px; width:100%; }
+.reply-form label { display:block; }
+.reply-form .form-actions { margin-top:8px; }
 
 /* assign button form */
 .assign-form { margin-bottom: 12px; }
+
+/* clearfix for messages */
+.message::after { content: ""; display: table; clear: both; }
 
 /* Responsiveness */
 @media (max-width: 1000px) {
