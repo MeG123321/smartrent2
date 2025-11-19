@@ -3,7 +3,7 @@ require_once 'includes/config.php';
 require_once 'includes/db.php';
 require_once 'includes/auth.php';
 session_start();
-require_role('admin');
+require_login();
 
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -43,7 +43,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             require_once 'includes/admin_functions.php';
             admin_log_activity($pdo, $_SESSION['user_id'] ?? null, 'Dodano ofertę', "property_id:{$propId}, title: " . $title);
 
-            header('Location: admin_panel.php');
+            // Redirect based on user role
+            if ($_SESSION['user_role'] === 'admin') {
+                header('Location: admin_panel.php');
+            } else {
+                header('Location: user_panel.php');
+            }
             exit;
         }
     }
@@ -82,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </label>
     <div class="form-actions">
       <button class="btn btn-primary" type="submit">Dodaj</button>
-      <a class="btn" href="admin_panel.php">Anuluj</a>
+      <a class="btn" href="<?=$_SESSION['user_role'] === 'admin' ? 'admin_panel.php' : 'user_panel.php'?>">Anuluj</a>
     </div>
   </form>
 </main>

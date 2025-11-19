@@ -33,7 +33,7 @@ $recent = admin_get_recent($pdo);
       <h3>Oferty</h3>
       <p style="font-size:1.6rem;font-weight:700"><?=intval($stats['properties'])?></p>
       <p class="muted">Aktywne oferty</p>
-      <p><a class="btn" href="property_list.php">Przeglądaj</a></p>
+      <p><a class="btn" href="property_management.php">Zarządzaj</a></p>
     </div>
     <div class="panel">
       <h3>Wynajmy</h3>
@@ -67,6 +67,7 @@ $recent = admin_get_recent($pdo);
       <h3 style="margin-top:18px">Szybkie akcje</h3>
       <div class="panel">
         <a class="btn btn-primary" href="add_property.php">Dodaj ofertę</a>
+        <a class="btn" href="rental_management.php">Zarządzanie wynajmami</a>
         <a class="btn" href="manage_users.php">Zarządzaj użytkownikami</a>
         <a class="btn" href="admin_reports.php">Generuj raport</a>
         <a class="btn" href="admin_settings.php">Ustawienia serwisu</a>
