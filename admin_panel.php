@@ -67,6 +67,7 @@ $recent = admin_get_recent($pdo);
       <h3 style="margin-top:18px">Szybkie akcje</h3>
       <div class="panel">
         <a class="btn btn-primary" href="add_property.php">Dodaj ofertę</a>
+        <a class="btn btn-primary" href="rental_management.php">Zarządzaj wynajmem</a>
         <a class="btn" href="manage_users.php">Zarządzaj użytkownikami</a>
         <a class="btn" href="admin_reports.php">Generuj raport</a>
         <a class="btn" href="admin_settings.php">Ustawienia serwisu</a>

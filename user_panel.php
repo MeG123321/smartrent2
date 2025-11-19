@@ -68,7 +68,7 @@ $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
       <h3 style="margin-top:12px">Wiadomości i pomoc</h3>
       <div class="panel">
-        <p><a class="btn" href="messages.php">Wiadomości</a> <a class="btn" href="support_ticket.php">Zgłoś problem</a></p>
+        <p><a class="btn" href="messages.php">Wiadomości</a> <a class="btn" href="maintenance_request.php">Zgłoś usterkę</a> <a class="btn" href="support_ticket.php">Zgłoś problem</a></p>
         <h4>Twoje zgłoszenia</h4>
         <?php if (!$tickets): ?>
           <p>Brak zgłoszeń</p>
