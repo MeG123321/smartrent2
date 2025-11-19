@@ -15,7 +15,7 @@ $rents = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Historia wynajmów — samrtrent</title>
+  <title>Historia wynajmów — smartrent</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>

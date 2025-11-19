@@ -10,7 +10,7 @@ session_start();
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>samrtrent — Wynajmij komfortowo</title>
+  <title>smartrent — Wynajmij komfortowo</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -19,7 +19,7 @@ session_start();
 <main class="container">
   <header class="hero">
     <div class="hero-inner">
-      <h1>samrtrent — Znajdź idealne mieszkanie</h1>
+      <h1>smartrent — Znajdź idealne mieszkanie</h1>
       <p>Przeglądaj oferty, rezerwuj i zarządzaj wynajmami — szybko i bezpiecznie.</p>
       <div class="cta">
         <?php if (!is_logged_in()): ?>

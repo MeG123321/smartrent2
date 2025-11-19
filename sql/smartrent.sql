@@ -1,6 +1,6 @@
--- Prosty schemat bazy danych dla samrtrent (MySQL)
-CREATE DATABASE IF NOT EXISTS samrtrent CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE samrtrent;
+-- Prosty schemat bazy danych dla smartrent (MySQL)
+CREATE DATABASE IF NOT EXISTS smartrent CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE smartrent;
 
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (

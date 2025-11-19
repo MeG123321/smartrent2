@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Edytuj ofertę — samrtrent</title>
+  <title>Edytuj ofertę — smartrent</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
