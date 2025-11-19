@@ -1,6 +1,0 @@
-Test Case ID,Module,Test Data,Expected Result,Actual Result,Status,Priority Level,Test Scenario,Date
-TC001,User Authentication,"username: user1, password: pass123",User should be able to log in successfully,,"Pending",High,"Verify that a user can log in with valid credentials, and is redirected to the dashboard","2025-11-13"
-TC002,User Authentication,"username: user1, password: wrongpass",Error message displayed as incorrect credentials,,"Pending",High,"Verify that an error message is displayed for invalid login attempts","2025-11-13"
-TC003,Device Management,"Device ID: 001",Device should be added successfully,,"Pending",Medium,"Add a new device to the user’s account and ensure it shows up in the device list","2025-11-13"
-TC004,Notifications,"User ID: user1, Notification Type: Alert",Notification should be received by the user,,"Pending",Medium,"Test that notifications are sent and received correctly based on user settings","2025-11-13"
-TC005,Settings,"Setting: Auto-lock, Value: Enabled",Setting should be saved successfully,,"Pending",Low,"Check that user settings can be updated and saved correctly","2025-11-13"

@@ -1,7 +1,0 @@
-ID Testu,Nazwa,Opis,Warunek Początkowy,Scenariusz,Dane Wejściowe,Oczekiwany Efekt
-1,Login Test,Test logowania użytkownika,"Użytkownik zarejestrowany","Użytkownik loguje się przy użyciu poprawnych danych","Login: test@smartrent2.pl; Hasło: Test1234","Użytkownik powinien być zalogowany i przekierowany na stronę główną."
-2,Rejestracja Test,Test rejestracji użytkownika,"Użytkownik nie zarejestrowany","Użytkownik wypełnia formularz rejestracyjny poprawnymi danymi","Imię: Jan; Email: jan@smartrent2.pl; Hasło: Test1234","Użytkownik powinien otrzymać potwierdzenie rejestracji."
-3,Zarządzanie Nieruchomością Test,Test dodawania nowej nieruchomości,"Użytkownik zalogowany jako agent","Użytkownik dodaje nową nieruchomość przy użyciu formularza","Nazwa: Nowa Nieruchomość; Cena: 500000; Adres: ul. Jaśminowa 10","Nieruchomość powinna być dodana i widoczna na liście nieruchomości."
-4,Wiadomości Test,Test wysyłania wiadomości,"Użytkownik zalogowany","Użytkownik wysyła wiadomość do administratora","Treść: Mam pytanie dotyczące wynajmu!","Wiadomość powinna być dostarczona do administratora."
-5,Pokładka Administracyjna Test,Test dostępu do panelu administracyjnego,"Użytkownik z uprawnieniami administratora","Użytkownik loguje się do panelu administracyjnego","Login: admin@smartrent2.pl; Hasło: Admin1234","Użytkownik powinien zobaczyć pulpit nawigacyjny panelu administracyjnego."
-6,Sekretność Test,Test zabezpieczeń,"Użytkownik nieznany","Użytkownik próbuje uzyskać dostęp do danych bez logowania","N/A","Użytkownik powinien być przekierowany do strony logowania."
