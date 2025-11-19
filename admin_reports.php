@@ -8,9 +8,9 @@ require_role('admin');
 
 $from = $_GET['from'] ?? null;
 $to = $_GET['to'] ?? null;
-$report = ['summary'=>['total_revenue'=>0,'total_rentals'=>0],'by_property'=>[]];
+$report = null;
 
-if ($from || $to) {
+if ($from && $to) {
     $report = admin_generate_report($pdo, $from, $to);
     // jeśli żądanie eksportu CSV
     if (!empty($_GET['export']) && $_GET['export'] === 'csv') {
@@ -31,15 +31,15 @@ if ($from || $to) {
   <h2>Raporty</h2>
 
   <form method="get" class="panel" style="display:flex;gap:8px;align-items:center">
-    <label>Od <input type="date" name="from" value="<?=htmlspecialchars($from)?>"></label>
-    <label>Do <input type="date" name="to" value="<?=htmlspecialchars($to)?>"></label>
+    <label>Od <input type="date" name="from" value="<?=htmlspecialchars($from ?? '')?>"></label>
+    <label>Do <input type="date" name="to" value="<?=htmlspecialchars($to ?? '')?>"></label>
     <button class="btn btn-primary" type="submit">Generuj</button>
-    <?php if ($from || $to): ?>
+    <?php if ($report): ?>
       <a class="btn" href="?from=<?=urlencode($from)?>&to=<?=urlencode($to)?>&export=csv">Eksportuj CSV</a>
     <?php endif; ?>
   </form>
 
-  <?php if ($report['summary']): ?>
+  <?php if ($report && $report['summary']): ?>
     <div class="panel" style="margin-top:12px">
       <h3>Podsumowanie</h3>
       <p>Liczba rezerwacji: <strong><?=intval($report['summary']['total_rentals'])?></strong></p>
@@ -48,6 +48,7 @@ if ($from || $to) {
 
     <div class="panel" style="margin-top:12px">
       <h3>Top oferty</h3>
+      <?php if (!empty($report['by_property'])): ?>
       <table class="table">
         <thead><tr><th>ID</th><th>Tytuł</th><th>Miasto</th><th>Rezerwacje</th><th>Przychód</th></tr></thead>
         <tbody>
@@ -62,6 +63,9 @@ if ($from || $to) {
         <?php endforeach; ?>
         </tbody>
       </table>
+      <?php else: ?>
+        <p>Brak danych dla wybranego okresu.</p>
+      <?php endif; ?>
     </div>
   <?php endif; ?>
 </main>

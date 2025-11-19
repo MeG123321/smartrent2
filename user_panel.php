@@ -45,6 +45,12 @@ $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <p><a class="btn" href="rent_history.php">Zobacz historię wynajmów</a> <a class="btn" href="user_settings.php">Ustawienia konta</a></p>
       </div>
 
+      <div class="panel" style="margin-top:12px">
+        <h3>Moje nieruchomości</h3>
+        <p>Zarządzaj swoimi mieszkaniami i ofertami.</p>
+        <p><a class="btn btn-primary" href="my_properties.php">Moje mieszkania</a></p>
+      </div>
+
       <h3>Ostatnie rezerwacje</h3>
       <div class="panel">
         <?php if (!$recentRents): ?>
