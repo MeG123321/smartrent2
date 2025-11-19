@@ -3,7 +3,7 @@ require_once 'includes/config.php';
 require_once 'includes/db.php';
 require_once 'includes/auth.php';
 session_start();
-require_role('admin');
+require_login();
 
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -11,7 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $desc = trim($_POST['description'] ?? '');
     $city = trim($_POST['city'] ?? '');
     $price = floatval($_POST['price'] ?? 0);
-    $owner_id = intval($_POST['owner_id'] ?? 0) ?: $_SESSION['user_id'];
+    // Only admins can set owner_id; regular users use their own ID
+    if (($_SESSION['user_role'] ?? 'user') === 'admin' && isset($_POST['owner_id'])) {
+        $owner_id = intval($_POST['owner_id']);
+    } else {
+        $owner_id = $_SESSION['user_id'];
+    }
 
     if (!$title || !$city || $price <= 0) {
         $errors[] = "Wypełnij pola: tytuł, miasto, cena.";
@@ -43,7 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             require_once 'includes/admin_functions.php';
             admin_log_activity($pdo, $_SESSION['user_id'] ?? null, 'Dodano ofertę', "property_id:{$propId}, title: " . $title);
 
-            header('Location: admin_panel.php');
+            // Redirect based on user role
+            $redirectUrl = ($_SESSION['user_role'] ?? 'user') === 'admin' ? 'admin_panel.php' : 'user_panel.php';
+            header('Location: ' . $redirectUrl);
             exit;
         }
     }
@@ -82,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </label>
     <div class="form-actions">
       <button class="btn btn-primary" type="submit">Dodaj</button>
-      <a class="btn" href="admin_panel.php">Anuluj</a>
+      <a class="btn" href="<?= ($_SESSION['user_role'] ?? 'user') === 'admin' ? 'admin_panel.php' : 'user_panel.php' ?>">Anuluj</a>
     </div>
   </form>
 </main>
