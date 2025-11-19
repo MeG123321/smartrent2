@@ -42,7 +42,7 @@ $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h3>Podsumowanie konta</h3>
         <p>Łączne rezerwacje: <strong><?=intval($totalRentals)?></strong></p>
         <p>Nadchodzące: <strong><?=intval($upcoming)?></strong></p>
-        <p><a class="btn" href="rent_history.php">Zobacz historię wynajmów</a> <a class="btn" href="user_settings.php">Ustawienia konta</a></p>
+        <p><a class="btn" href="rent_history.php">Zobacz historię wynajmów</a> <a class="btn" href="add_property.php">Dodaj mieszkanie</a> <a class="btn" href="user_settings.php">Ustawienia konta</a></p>
       </div>
 
       <h3>Ostatnie rezerwacje</h3>
