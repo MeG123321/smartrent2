@@ -16,6 +16,11 @@ $stmt = $pdo->prepare("SELECT COUNT(*) FROM rentals WHERE user_id = :uid AND sta
 $stmt->execute(['uid'=>$user_id]);
 $upcoming = (int)$stmt->fetchColumn();
 
+// Count of user's properties
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM properties WHERE owner_id = :uid");
+$stmt->execute(['uid'=>$user_id]);
+$myPropertiesCount = (int)$stmt->fetchColumn();
+
 $stmt = $pdo->prepare("SELECT id,property_id,start_date,end_date,price,created_at FROM rentals WHERE user_id = :uid ORDER BY created_at DESC LIMIT 10");
 $stmt->execute(['uid'=>$user_id]);
 $recentRents = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -42,7 +47,12 @@ $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h3>Podsumowanie konta</h3>
         <p>Łączne rezerwacje: <strong><?=intval($totalRentals)?></strong></p>
         <p>Nadchodzące: <strong><?=intval($upcoming)?></strong></p>
-        <p><a class="btn" href="rent_history.php">Zobacz historię wynajmów</a> <a class="btn" href="user_settings.php">Ustawienia konta</a></p>
+        <p>Moje mieszkania: <strong><?=intval($myPropertiesCount)?></strong></p>
+        <p>
+          <a class="btn" href="rent_history.php">Zobacz historię wynajmów</a> 
+          <a class="btn" href="user_settings.php">Ustawienia konta</a>
+          <a class="btn" href="my_properties.php">Moje mieszkania</a>
+        </p>
       </div>
 
       <h3>Ostatnie rezerwacje</h3>
