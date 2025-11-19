@@ -3,12 +3,7 @@ require_once 'includes/config.php';
 require_once 'includes/db.php';
 require_once 'includes/auth.php';
 session_start();
-
-// Sprawdź czy użytkownik jest adminem
-if (!is_logged_in() || !is_admin()) {
-    header('Location: login.php');
-    exit;
-}
+require_role('admin');
 ?>
 <!doctype html>
 <html lang="pl">
